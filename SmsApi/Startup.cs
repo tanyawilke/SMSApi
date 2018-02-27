@@ -6,7 +6,6 @@ using Swashbuckle.AspNetCore.Swagger;
 using Serilog;
 using Serilog.Events;
 using System.IO;
-using Serilog.Configuration;
 using Microsoft.EntityFrameworkCore;
 using SmsApi.Models;
 
@@ -32,6 +31,7 @@ namespace SmsApi
                 .AddJsonFile($"appsettings.{CurrentEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .Build();
 
+            // "Server=LAP10123;Database=SmsApi;Trusted_Connection=True;ConnectRetryCount=0"
             // In order for our MVC controllers to make use of ApiDbContext register it as a service.
             services.AddDbContext<ApiContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString")));
 
@@ -48,7 +48,7 @@ namespace SmsApi
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "Recognition Business Unit API", Version = "v1" });
+                c.SwaggerDoc("v1", new Info { Title = "SMS API API", Version = "v1" });
             });
         }
 
@@ -67,7 +67,7 @@ namespace SmsApi
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Recognition Business Unit API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "SMS API V1");
             });
 
             app.UseMvc();
