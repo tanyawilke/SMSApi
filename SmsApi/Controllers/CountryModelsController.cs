@@ -10,7 +10,7 @@ using Serilog;
 
 namespace SmsApi.Controllers
 {
-    [Produces("application/json")]
+    [FormatFilter]
     [Route("api/CountryModels")]
     public class CountryModelsController : Controller
     {
@@ -24,7 +24,11 @@ namespace SmsApi.Controllers
         }
 
         // GET: api/CountryModels
+        // GET: api/CountryModels/.xml
+        // GET: api/CountryModels/.json
+        // Format is optional
         [HttpGet]
+        [HttpGet(".{format?}")]
         public IEnumerable<CountryModel> GetCountry()
         {
             var country = _context.Country;
@@ -40,7 +44,11 @@ namespace SmsApi.Controllers
         }
 
         // GET: api/CountryModels/5
+        // GET: api/CountryModels/5.xml
+        // GET: api/CountryModels/5.json
+        // Format is optional
         [HttpGet("{id}")]
+        [HttpGet("{id}.{format?}")]
         public async Task<IActionResult> GetCountryModel([FromRoute] int id)
         {
             if (!ModelState.IsValid)
@@ -60,7 +68,7 @@ namespace SmsApi.Controllers
 
         // PUT: api/CountryModels/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCountryModel([FromRoute] int id, [FromBody] CountryModel countryModel)
+        public async Task<IActionResult> UpdateCountryModel([FromRoute] int id, [FromBody] CountryModel countryModel)
         {
             if (!ModelState.IsValid)
             {
@@ -95,7 +103,7 @@ namespace SmsApi.Controllers
 
         // POST: api/CountryModels
         [HttpPost]
-        public async Task<IActionResult> PostCountryModel([FromBody] CountryModel countryModel)
+        public async Task<IActionResult> CreateCountryModel([FromBody] CountryModel countryModel)
         {
             if (!ModelState.IsValid)
             {

@@ -8,6 +8,9 @@ using Serilog.Events;
 using System.IO;
 using Microsoft.EntityFrameworkCore;
 using SmsApi.Models;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SmsApi
 {
@@ -32,12 +35,25 @@ namespace SmsApi
                 .Build();
 
             // "Server=LAP10123;Database=SmsApi;Trusted_Connection=True;ConnectRetryCount=0"
+            // OR Server=(localdb)\\MSSQLLocalDB;Database=SmsApi;Trusted_Connection=True;ConnectRetryCount=0
             // In order for our MVC controllers to make use of ApiDbContext register it as a service.
             services.AddDbContext<ApiContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString")));
 
-            services.AddMvc();
+            services
+                .AddMvc(options =>
+                {
+                    options.RespectBrowserAcceptHeader = true;
+                    //options.Filters.Add(new ProducesAttribute("application/xml"));
+                    //options.FormatterMappings.SetMediaTypeMappingForFormat("js", "application/json");
+                    //options.FormatterMappings.SetMediaTypeMappingForFormat("xml", "application/xml");
+                })
+                .AddXmlSerializerFormatters()
+                .AddFormatterMappings(x => x.SetMediaTypeMappingForFormat("xml", "application/xml"))
+                .AddFormatterMappings(x => x.SetMediaTypeMappingForFormat("js", "application/json"));
 
-            services.AddSingleton<Serilog.ILogger>
+
+
+            services.AddSingleton<ILogger>
             (x => new LoggerConfiguration()
                   .MinimumLevel.Information()
                   .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
