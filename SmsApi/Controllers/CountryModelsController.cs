@@ -28,7 +28,7 @@ namespace SmsApi.Controllers
         // GET: api/CountryModels/.json
         // Format is optional
         [HttpGet]
-        [HttpGet(".{format?}")]
+        [HttpGet(".{format}")]
         public IEnumerable<CountryModel> GetCountry()
         {
             var country = _context.Country;
@@ -48,7 +48,7 @@ namespace SmsApi.Controllers
         // GET: api/CountryModels/5.json
         // Format is optional
         [HttpGet("{id}")]
-        [HttpGet("{id}.{format?}")]
+        [HttpGet("{id}.{format}")]
         public async Task<IActionResult> GetCountryModel([FromRoute] int id)
         {
             if (!ModelState.IsValid)
