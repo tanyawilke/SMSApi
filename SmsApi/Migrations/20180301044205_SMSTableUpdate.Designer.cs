@@ -11,9 +11,10 @@ using System;
 namespace SmsApi.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    partial class ApiContextModelSnapshot : ModelSnapshot
+    [Migration("20180301044205_SMSTableUpdate")]
+    partial class SMSTableUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,7 +56,17 @@ namespace SmsApi.Migrations
 
                     b.HasKey("country_id");
 
+                    b.HasIndex("id");
+
                     b.ToTable("Sms");
+                });
+
+            modelBuilder.Entity("SmsApi.Models.SmsModel", b =>
+                {
+                    b.HasOne("SmsApi.Models.CountryModel", "Country")
+                        .WithMany()
+                        .HasForeignKey("id")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

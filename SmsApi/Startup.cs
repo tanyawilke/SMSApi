@@ -51,8 +51,6 @@ namespace SmsApi
                 .AddFormatterMappings(x => x.SetMediaTypeMappingForFormat("xml", "application/xml"))
                 .AddFormatterMappings(x => x.SetMediaTypeMappingForFormat("js", "application/json"));
 
-
-
             services.AddSingleton<ILogger>
             (x => new LoggerConfiguration()
                   .MinimumLevel.Information()

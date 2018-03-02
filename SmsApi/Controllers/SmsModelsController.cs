@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmsApi.Models;
+using SmsApi.Enums;
 
 namespace SmsApi.Controllers
 {
@@ -90,6 +91,8 @@ namespace SmsApi.Controllers
                 return BadRequest(ModelState);
             }
 
+            var sendMessage = SendSmsMessage(smsModel);
+
             _context.Sms.Add(smsModel);
             await _context.SaveChangesAsync();
 
@@ -120,6 +123,37 @@ namespace SmsApi.Controllers
         private bool SmsModelExists(int id)
         {
             return _context.Sms.Any(e => e.country_id == id);
+        }
+
+        public async Task<int> SendSmsMessage(SmsModel smsModel)
+        {
+            var messageStatus = 0;
+
+            try
+            {
+                ASPSMS.SMS tASPSMS = new ASPSMS.SMS();
+                tASPSMS.AddRecipient(smsModel.sender);
+                tASPSMS.Originator = smsModel.message;
+                tASPSMS.MessageData = smsModel.number.ToString();
+
+                await tASPSMS.SendTextSMS();
+
+                if (tASPSMS.ErrorCode == 1)
+                {
+                    messageStatus = (int)MessageStatus.Success;
+                }
+                else
+                {
+                    messageStatus = (int)MessageStatus.Failed;
+                    //ViewBag.Status = "Error: " + tASPSMS.ErrorCode + " " + tASPSMS.ErrorCodeDescription;
+                }
+            }
+            catch (Exception ex)
+            {
+                // ViewBag.Status = "Error: " + ex.Message;
+            }
+
+            return messageStatus;
         }
     }
 }
